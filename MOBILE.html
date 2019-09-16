@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ĐIỆN THOẠI TỰ VIẾT</title>
+</head>
+<body>
+<div id="iphone">
+    <div>
+        <legend><u style="color: blue">*IPHONE*</u></legend>
+        <textarea style="color: blue" id="viewIPHONE" placeholder="screen" readonly cols="78" rows="5"></textarea>
+    </div>
+    <div id="iphoneMethod">
+        <button style="color: red" id="powerIPHONE" onclick="ONOFF(iphone)">ON</button>
+        <button onclick="STATUS(iphone)">STATUS</button>
+        <button onclick="BATTERY(iphone)">BATTERY</button>
+        <button onclick="TEXT(iphone)">TEXT</button>
+        <button style="color: orange" onclick="CHARGE(iphone)">CHARGE+</button>
+        <button onclick="SENDTEXT(iphone)">SENDTEXT</button>
+        <button onclick="OUTBOX(iphone)">OUTBOX</button>
+        <button onclick="INBOX(iphone)">INBOX</button>
+    </div>
+</div>
+<br><br>
+<div id="nokia">
+    <div>
+        <legend><u style="color: darkmagenta">*NOKIA*</u></legend>
+        <textarea style="color: darkmagenta" id="viewNOKIA" placeholder="screen" readonly cols="78" rows="5"></textarea>
+    </div>
+    <div id="nokiaMethod">
+        <button style="color: red" id="powerNOKIA" onclick="ONOFF(nokia)">ON</button>
+        <button onclick="STATUS(nokia)">STATUS</button>
+        <button onclick="BATTERY(nokia)">BATTERY</button>
+        <button onclick="TEXT(nokia)">TEXT</button>
+        <button style="color: orange" onclick="CHARGE(nokia)">CHARGE+</button>
+        <button onclick="SENDTEXT(nokia)">SENDTEXT</button>
+        <button onclick="OUTBOX(nokia)">OUTBOX</button>
+        <button onclick="INBOX(nokia)">INBOX</button>
+    </div>
+</div>
+<script>
+    // debugger
+    function Mobile(name, power,battery, inbox, outbox) {
+        this.name = name;
+        this.power = true;
+        // this.status = status;
+        this.battery = battery;
+        this.inbox = inbox;
+        this.outbox = outbox;
+        this.getPower = function () {
+            let powerONOFF = document.getElementById("power" + this.name)
+            if (this.power) {
+                this.power = false;
+            } else {
+                this.power = true;
+            }
+            if (this.power) {
+                powerONOFF.innerHTML = "ON";
+            } else {
+                powerONOFF.innerHTML = "OFF";
+            }
+        };
+        let Screen = document.getElementById("view" + this.name);
+        this.getStatus = function () {
+            // let Status = document.getElementById("view" + this.name);
+            if (this.power) {
+                Screen.value = "THE PHONE IS ON"
+            } else {
+                Screen.value = "THE PHONE IS OFF"
+            }
+        };
+        this.getBattery = function () {
+            // let Battery = document.getElementById("view" + this.name);
+            if (this.power) {
+                if (this.battery > 0) {
+                    Screen.value = this.battery + "%"
+                } else {
+                    Screen.value = "The phone is out of battery"
+                }
+
+            } else {
+                Screen.value = "THE PHONE IS OFF"
+            }
+        };
+        this.getCharge = function () {
+            if (this.battery < 100 && this.battery >= 0) {
+                this.battery += 1;
+            } else {
+                this.battery = this.battery + 0;
+            }
+        };
+        this.getText = function () {
+            // let text = document.getElementById("view" + this.name);
+            if (this.power) {
+                if (this.battery > 0) {
+                    Screen.value = "";
+                    Screen.setAttribute("placeholder", "Texting");
+                    Screen.removeAttribute("readonly");
+                    this.battery -= 1;
+                } else {
+                    Screen.value = "THE PHONE IS OUT OF BATTERY"
+                }
+            } else {
+                Screen.value = "THE PHONE IS OFF"
+            }
+        };
+        this.getSendText = function () {
+            if (this.power) {
+                if (this.battery > 0) {
+                    if (Screen.value != '') {
+                        this.outbox.push(Screen.value);
+                        Screen.value = "";
+                        this.battery -= 1;
+                    }
+
+                } else {
+                    Screen.value = "THE PHONE IS OUT OF BATTERY";
+                }
+            } else {
+                Screen.value = 'THE PHONE IS OFF';
+            }
+        };
+        this.getOutbox = function () {
+            if (this.power) {
+                if (this.battery > 0) {
+                    Screen.value = '';
+                    Screen.setAttribute("placeholder", "Outbox");
+                    Screen.removeAttribute("readonly", 'true');
+                    for (let i = 0; i < this.outbox.length; i++) {
+                        Screen.value += this.outbox[i] + '\n';
+                    }
+                    this.battery -= 1;
+                } else {
+                    Screen.value = 'THE PHONE IS OFF';
+                }
+            } else {
+                Screen.value = 'THE PHONE IS OFF';
+            }
+        };
+        this.getInbox = function () {
+            if (this.power) {
+                if (this.battery > 0) {
+                    Screen.value = '';
+                    Screen.setAttribute("placeholder", "Inbox");
+                    Screen.removeAttribute("readonly", 'true');
+                    for (let i = 0; i < this.inbox.length; i++) {
+                        Screen.value += this.inbox[i];
+                    }
+                    this.battery -= 1;
+                } else {
+                    Screen.value = "BATTERY LOW!!"
+                }
+            }else {
+                Screen.value = "THE PHONE IS OFF"}
+        };
+
+    }
+
+    let nameIPHONE = "IPHONE"
+    // let powerIPHONE = "on";
+    // let statusIPHONE;
+    let batteryIPHONE = 100;
+    let inboxIPHONE = [];
+    let outboxIPHONE = [];
+    let iphone = new Mobile(nameIPHONE, true,batteryIPHONE, inboxIPHONE, outboxIPHONE);
+    let nameNOKIA = "NOKIA"
+    // let powerNOKIA = "on";
+    // let statusNOKIA;
+    let batteryNOKIA = 100;
+    let outboxNOKIA = [];
+    let inboxNOKIA = [];
+    let nokia = new Mobile(nameNOKIA, true, batteryNOKIA, inboxNOKIA, outboxNOKIA);
+
+    function ONOFF(Mobile) {
+        Mobile.getPower();
+    }
+
+    function STATUS(Mobile) {
+        Mobile.getStatus();
+    }
+
+    function BATTERY(Mobile) {
+        Mobile.getBattery();
+    }
+
+    function TEXT(Mobile) {
+        Mobile.getText();
+    }
+
+    function SENDTEXT(Mobile) {
+        Mobile.getSendText();
+        // iphone.inbox=nokia.outbox;
+        // iphone.outbox=nokia.inbox;
+        iphone.inbox=nokia.outbox;
+        nokia.inbox=iphone.outbox;
+
+    }
+
+    function CHARGE(Mobile) {
+        Mobile.getCharge();
+    }
+
+    function OUTBOX(Mobile) {
+        Mobile.getOutbox();
+    }
+
+    function INBOX(Mobile) {
+        Mobile.getInbox();
+
+    }
+</script>
+</body>
+</html>
